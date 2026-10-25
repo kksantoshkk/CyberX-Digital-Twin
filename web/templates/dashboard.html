@@ -1,0 +1,26 @@
+{% extends "base.html" %}{% set active_page='dashboard' %}{% block title %}Overview{% endblock %}{% block crumb %}Overview{% endblock %}
+{% block content %}
+<div class="heading"><div><p class="eyebrow">SECURITY OPERATIONS / OVERVIEW</p><h1>Good morning, <span>researcher.</span></h1><p class="muted">Monitor your simulated environment and evaluate defensive changes.</p></div><a class="btn primary" href="{{ url_for('scenarios') }}">▷ Run a scenario</a></div>
+<div class="notice"><b>ⓘ &nbsp; Simulation workspace</b><span>This dashboard uses demo data. No real attacks or network changes are performed.</span><label>SAFE MODE</label></div>
+<div class="metrics">
+<div class="metric"><p>ASSETS IN TWIN <b class="icon blue">⌘</b></p><strong>04 <small>assets</small></strong><span>3 services · 1 security control</span></div>
+<div class="metric"><p>SCENARIOS RUN <b class="icon purple">▷</b></p><strong>12</strong><span>Illustrative session count</span></div>
+<div class="metric"><p>DETECTION RATE <b class="icon green">⌁</b></p><strong>91.7<small>%</small></strong><span>Demo value · not model-evaluated</span></div>
+<div class="metric"><p>OPEN FINDINGS <b class="icon orange">⚑</b></p><strong>03</strong><span>1 high priority · demo data</span></div>
+</div>
+<div class="columns">
+<section class="panel"><div class="panel-head"><div><h2>Digital twin topology</h2><p>Assets and simulated connectivity</p></div><a href="{{ url_for('twin') }}">Open twin ↗</a></div>
+<div class="topology"><div class="connections"></div>
+<div class="node web"><b>⌘ &nbsp; Web server</b><small>WEB-01 · Public</small><i>ONLINE</i></div>
+<div class="node firewall"><b>⬡ &nbsp; Firewall</b><small>FW-01 · Control</small><i>ACTIVE</i></div>
+<div class="node db"><b>▤ &nbsp; Database</b><small>DB-01 · Critical</small><i>ONLINE</i></div>
+<div class="node auth"><b>♙ &nbsp; Auth service</b><small>AUTH-01 · Internal</small><i>MONITOR</i></div></div>
+<div class="legend">● Online &nbsp;&nbsp; <span>● Control active</span> &nbsp;&nbsp; <em>● Monitor</em></div></section>
+<section class="panel"><div class="panel-head"><div><h2>Recent activity</h2><p>Latest simulation events</p></div><a href="{{ url_for('results') }}">View all</a></div>
+<div class="event"><i class="red">!</i><div><b>SQL injection test</b><small>WEB-01 · Scenario SC-012</small></div><label class="red-text">FLAGGED</label></div>
+<div class="event"><i class="green">✓</i><div><b>Firewall rule evaluated</b><small>FW-01 · Configuration B</small></div><label class="green-text">BLOCKED</label></div>
+<div class="event"><i class="orange">~</i><div><b>Session anomaly sample</b><small>AUTH-01 · Scenario SC-010</small></div><label class="orange-text">REVIEW</label></div>
+<div class="event"><i>↻</i><div><b>Baseline captured</b><small>Twin configuration · Run 009</small></div><label>SAVED</label></div></section></div>
+<div class="section-title"><h2>Recommended next steps</h2><p>Improve the simulated environment through repeatable testing.</p></div>
+<div class="quicklinks"><a href="{{ url_for('twin') }}"><b>⌘ &nbsp; Review asset exposure</b><small>Check connections to critical assets. ↗</small></a><a href="{{ url_for('scenarios') }}"><b>▷ &nbsp; Run a controlled test</b><small>Compare baseline and defense settings. ↗</small></a><a href="{{ url_for('results') }}"><b>⌁ &nbsp; Review findings</b><small>Inspect evidence and suggested actions. ↗</small></a></div>
+{% endblock %}

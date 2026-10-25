@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #42a5f5, #0073e6);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        .container h1 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #005bb5;
+        }
+        .container label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .container input {
+            width: 95%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .container button {
+            width: 102%;
+            padding: 12px;
+            background: #0073e6;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .container button:hover {
+            background: #E63B60;
+        }
+        .container .footer {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+        .container .footer a {
+            color: #0073e6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create Your Account</h1>
+        <form action="/register" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Choose a username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+
+            <button type="submit">Register</button>
+        </form>
+        <div class="footer">
+            <p>Already have an account? <a href="/login">Login here</a></p>
+        </div>
+    </div>
+</body>
+</html>

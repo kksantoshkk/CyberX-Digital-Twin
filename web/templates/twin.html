@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% set active_page='twin' %}{% block title %}Digital twin{% endblock %}{% block crumb %}Digital twin{% endblock %}
+{% block content %}<div class="heading"><div><p class="eyebrow">ENVIRONMENT / TOPOLOGY</p><h1>Digital <span>twin.</span></h1><p class="muted">Model assets and connections for controlled security testing.</p></div><button class="btn primary" id="addAsset">＋ Add asset</button></div>
+<div class="notice"><b>ⓘ &nbsp; Software simulation</b><span>Nodes represent logical assets. No VMs or real firewall rules are changed.</span><label>ISOLATED</label></div>
+<div class="twin-layout"><section class="panel"><div class="panel-head"><div><h2>Network topology</h2><p>Demo configuration · Twin v0.1</p></div><button class="btn" id="reset">Reset selection</button></div>
+<div class="twin-canvas"><div class="wire wire1"></div><div class="wire wire2"></div><div class="wire wire3"></div>
+<button class="twin-node selected" data-id="WEB-01" data-name="Web server" data-type="Web service" data-criticality="High" data-connections="FW-01">⌘<b>Web server</b><small>WEB-01</small></button>
+<button class="twin-node node-fw" data-id="FW-01" data-name="Firewall" data-type="Security control" data-criticality="Critical" data-connections="WEB-01, DB-01, AUTH-01">⬡<b>Firewall</b><small>FW-01</small></button>
+<button class="twin-node node-db" data-id="DB-01" data-name="Database" data-type="Database" data-criticality="Critical" data-connections="FW-01">▤<b>Database</b><small>DB-01</small></button>
+<button class="twin-node node-auth" data-id="AUTH-01" data-name="Auth service" data-type="Authentication" data-criticality="High" data-connections="FW-01">♙<b>Auth service</b><small>AUTH-01</small></button><div class="canvas-note">Dashed lines = simulated connections</div></div></section>
+<aside class="panel"><div class="panel-head"><div><h2>Asset details</h2><p id="assetSub">Selected asset</p></div><label class="demo-tag">DEMO</label></div><div class="asset-title"><span id="assetGlyph">⌘</span><div><b id="assetName">Web server</b><small id="assetId">WEB-01</small></div></div>
+<div class="detail"><span>Asset type</span><b id="assetType">Web service</b></div><div class="detail"><span>Criticality</span><b id="assetCrit">High</b></div><div class="detail"><span>Connections</span><b id="assetConnections">FW-01</b></div>
+<label class="field-label" for="criticality">Simulated criticality</label><select class="control" id="criticality"><option>Low</option><option>Medium</option><option selected>High</option><option>Critical</option></select><label class="check"><input type="checkbox" id="isolate"> Isolate asset in simulation</label><button class="btn primary wide" id="saveAsset">Save simulated settings</button><p id="saveHint" class="hint">Local prototype state only; backend persistence is not connected.</p></aside></div>
+<div id="assetMessage" class="notice hidden"></div>
+{% endblock %}

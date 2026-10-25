@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Overview{% endblock %} | CyberX</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head><body>
+<aside class="sidebar" id="sidebar">
+<a class="brand" href="{{ url_for('dashboard') }}"><span class="logo">CX</span><span><b>CYBER<span>X</span></b><small>SECURITY DIGITAL TWIN</small></span></a>
+<p class="nav-caption">WORKSPACE</p>
+<a class="nav {% if active_page=='dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">◫ &nbsp; Overview</a>
+<a class="nav {% if active_page=='twin' %}active{% endif %}" href="{{ url_for('twin') }}">⌘ &nbsp; Digital twin</a>
+<a class="nav {% if active_page=='scenarios' %}active{% endif %}" href="{{ url_for('scenarios') }}">▷ &nbsp; Scenarios</a>
+<a class="nav {% if active_page=='results' %}active{% endif %}" href="{{ url_for('results') }}">⌁ &nbsp; Results & insights</a>
+<div class="sidebar-bottom"><div class="system"><i></i><span><b>Simulation engine</b><small>UI preview mode</small></span><em>DEMO</em></div><p class="profile"><span class="avatar">CX</span><span><b>Research workspace</b><small>Local environment</small></span></p></div>
+</aside>
+<main><header class="topbar"><button id="menu" class="menu">☰</button><div class="crumb">CyberX <span>/</span> {% block crumb %}Overview{% endblock %}</div><span class="lab">● ISOLATED LAB</span></header>
+<div class="content">{% block content %}{% endblock %}<footer>CYBERX DIGITAL TWIN <span>Prototype UI · All displayed data is illustrative</span></footer></div></main>
+</body></html>
