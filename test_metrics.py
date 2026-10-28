@@ -22,7 +22,7 @@ def main():
 
     # Test 2: Record a synthetic high-severity event.
     state.add_event(
-        event_type="synthetic_test",
+        event_type="attack_detected",
         asset_id="web-01",
         severity="high",
         message="Synthetic test event",

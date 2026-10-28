@@ -1,15 +1,11 @@
 
-# twin/metrics.py
-
 from twin.state import TwinState
 
 
 class TwinMetrics:
     """
-    Calculates asset risk estimates and evaluates detection performance.
-
-    Asset risk is a heuristic estimate, not a calibrated prediction.
-    Detection metrics require labeled test cases and model predictions.
+    Calculates heuristic asset risk estimates and evaluates
+    binary attack-detection performance.
     """
 
     CRITICALITY_WEIGHT = {
@@ -27,6 +23,12 @@ class TwinMetrics:
         "critical": 30,
     }
 
+    RELEVANT_RISK_EVENTS = {
+        "simulation_started",
+        "attack_detected",
+        "suspicious_activity",
+    }
+
     def __init__(self, state: TwinState):
         self.state = state
 
@@ -36,10 +38,11 @@ class TwinMetrics:
 
     def calculate_asset_risk(self, asset_id: str) -> dict:
         """
-        Estimate an asset's risk using criticality, operational
-        status, isolation, and recent security events.
+        Estimate asset risk from criticality, operational status,
+        isolation, and the highest relevant recent event severity.
 
-        The result is a heuristic score between 0 and 100.
+        This is a heuristic score between 0 and 100, not an
+        attack probability or a trained ML prediction.
         """
 
         asset = self.state.get_asset(asset_id)
@@ -47,6 +50,7 @@ class TwinMetrics:
         if asset is None:
             raise ValueError(f"Unknown asset: {asset_id}")
 
+        # Start with the asset's criticality weight.
         score = self.CRITICALITY_WEIGHT.get(
             asset.criticality.lower(), 25
         )
@@ -57,21 +61,28 @@ class TwinMetrics:
         elif asset.status == "offline":
             score += 15
 
-        # Recent events contribute to risk.
+        # Find the highest relevant event severity.
+        # Do not add every event, which can inflate risk
+        # when the same scenario is run repeatedly.
         recent_events = self.state.get_recent_events(limit=50)
 
-        for event in recent_events:
-            if event["asset_id"] != asset_id:
-                continue
-
-            score += self.SEVERITY_WEIGHT.get(
-                event["severity"].lower(), 0
+        relevant_severities = [
+            self.SEVERITY_WEIGHT.get(
+                event.get("severity", "info").lower(), 0
             )
+            for event in recent_events
+            if event.get("asset_id") == asset_id
+            and event.get("event_type") in self.RELEVANT_RISK_EVENTS
+        ]
 
-        # Isolation reduces the modeled exposure estimate.
+        if relevant_severities:
+            score += max(relevant_severities)
+
+        # Isolation reduces modeled exposure.
         if asset.isolated:
             score *= 0.5
 
+        # Keep the result within the allowed range.
         score = min(100.0, max(0.0, float(score)))
 
         return {
@@ -83,19 +94,23 @@ class TwinMetrics:
         }
 
     def update_asset_risk(self, asset_id: str) -> dict:
-        """Calculate risk and store it on the virtual asset."""
+        """Calculate and store the current heuristic risk score."""
 
         result = self.calculate_asset_risk(asset_id)
 
-        self.state.set_risk_score(
-            asset_id,
-            result["risk_score"],
-        )
+        # Store the score without creating another risk event.
+        # This avoids risk-update events affecting future estimates.
+        asset = self.state.get_asset(asset_id)
+
+        if asset is None:
+            raise ValueError(f"Unknown asset: {asset_id}")
+
+        asset.risk_score = result["risk_score"]
 
         return result
 
     def calculate_all_asset_risks(self) -> list[dict]:
-        """Calculate estimated risk for every virtual asset."""
+        """Calculate estimated risk for all virtual assets."""
 
         return [
             self.calculate_asset_risk(asset["asset_id"])
@@ -103,7 +118,7 @@ class TwinMetrics:
         ]
 
     def get_risk_summary(self) -> dict:
-        """Summarize current heuristic risk estimates."""
+        """Summarize heuristic risk estimates across all assets."""
 
         risks = self.calculate_all_asset_risks()
 
@@ -119,7 +134,8 @@ class TwinMetrics:
 
         average = (
             sum(item["risk_score"] for item in risks) / len(risks)
-            if risks else 0.0
+            if risks
+            else 0.0
         )
 
         return {
@@ -149,9 +165,9 @@ class TwinMetrics:
         predicted: list[bool],
     ) -> dict:
         """
-        Evaluate binary attack detection predictions.
+        Evaluate binary attack-detection predictions.
 
-        True means attack; False means normal traffic.
+        True means attack; False means normal activity.
         Both lists must contain labeled test results.
         """
 
@@ -163,7 +179,10 @@ class TwinMetrics:
         if not actual:
             raise ValueError("At least one test case is required.")
 
-        if any(type(value) is not bool for value in actual + predicted):
+        if any(
+            type(value) is not bool
+            for value in actual + predicted
+        ):
             raise ValueError(
                 "Actual and predicted values must be booleans."
             )
@@ -190,7 +209,8 @@ class TwinMetrics:
 
         f1 = (
             2 * precision * recall / (precision + recall)
-            if precision + recall else 0.0
+            if precision + recall
+            else 0.0
         )
 
         return {
